@@ -1,65 +1,85 @@
-# 🖥️ Entiqon CLI
+# Entiqon CLI
 
-## Purpose
-The **Entiqon CLI** is a lightweight developer & DevOps toolkit designed to **streamline everyday workflows** inside the Entiqon ecosystem.  
-It bridges the gap between **library development**, **release management**, and **runtime utilities**, offering consistent, scriptable commands to help contributors and maintainers manage the project efficiently.
+**Developer & DevOps toolkit for the Entiqon ecosystem**
 
-Whereas **Entiqon libraries** (e.g., `db/builder`, `token/field`, `core/contracts`) provide compile-time tools for building queryable Go systems, the CLI provides **runtime developer ergonomics**—automation for Git, tests, coverage, tagging, release notes, and package lifecycle.
-
----
-
-## Philosophy
-- **Minimal dependencies** — plain Bash/POSIX tools (works on macOS/Linux, extensible for Windows WSL).
-- **Self-documented** — every script provides `-h`/`--help` output.
-- **Composable** — individual commands solve one thing well, can be chained.
-- **Versioned** — each CLI script is tied to Entiqon’s semver release cycle.
-- **Safe** — designed to *never lose work* (e.g., stash before rebases, confirmations for destructive ops).
+The Entiqon CLI provides a collection of tools to streamline development, testing, release automation, and operational workflows.
+All tools are distributed under the `entiqon/cli` module and live inside the `cmd/` directory.
 
 ---
 
-## Tooling Overview
+## 📦 Tools
 
-### Git & Release Automation (`bin/`)
-- **`gcpr`** – Create GitHub PRs quickly (auto-fills title, branch).
-- **`gce`** – Extract commits between tags (`-s`, `-e` for ranges).
-- **`gcr`** – Create GitHub releases with changelogs & notes.
-- **`gct`** – Automated tagging (`--title`, `--date`, `--notes`, `--sign`).
-- **`gsux`** – Git Stash Utility Extended (stash/apply/pop/drop/clear/list).
-- **`gcch`** – Cherry-pick helpers for backports.
-- **`ddc`** – Deploy Docker containers with standard flags.
+### ✅ Go-native binaries
+- **gotestx** — Go Test eXtended tool with coverage support
+  - Extends `go test` with coverage, quiet, and clean modes.
+  - Supports combined flags (`-cqC`, etc.) and auto package detection.
+  - Supersedes legacy Bash helpers `run-tests.sh` and `open-coverage.sh`.
 
-### Testing & Coverage
-- **`gotestx`** – Extended test runner: coverage, HTML reports, filters, CI mode.
-- **`run-tests.sh`** – Runs all packages with coverage (`go test ./... -cover`).
-- **`open-coverage.sh`** – Opens `coverage.html` after generation.
-- **CI Integration** – Used in GitHub Actions to enforce thresholds and upload to Codecov.
+### 📝 Bash-based tools (planned migration to Go)
+- **gcpr** — create GitHub Pull Requests
+- **gce** — extract commit history
+- **gcr** — generate release notes
+- **gct** — create and sign tags
+- **gsux** — stash/unstash workflow utility
+- **gcch** — changelog helper
+- **ddc** — deploy Docker container
 
-### Documentation
-- **Markdown helpers** – regenerate `README.md`, update `CHANGELOG.md`.
-- **Release notes** – auto-generate from commits with semantic prefixes (`feat:`, `fix:`, `docs:`, etc.).
+These remain Bash scripts for now but will gradually be ported to Go under `cmd/`.
 
 ---
 
-## Example Workflow
+## 🚀 Installation
 
-A typical **release cycle** with Entiqon CLI:
+From the root of `entiqon`:
 
-\`\`\`bash
-# Run all tests with coverage
-gotestx --cover --open
+```bash
+go install ./cli/cmd/gotestx
+```
 
-# Stage changes and stash WIP if needed
-gsux stash -m "WIP: refactor token.Field validation" -u -v
+or directly via GitHub (released versions):
 
-# Generate changelog entries since last release
-gce -s v1.13.0
+```bash
+go install github.com/entiqon/cli/cmd/gotestx@latest
+```
 
-# Tag and sign a new release
-gct -t v1.14.0 --title "Token Enhancements" --notes "Adds ResolveExpressionType and ValidateWildcard" --sign
+Check installation:
 
-# Push release to GitHub
-gcr v1.14.0
-\`\`\`
+```bash
+gotestx -v
+```
+
+---
+
+## 🛠 Development
+
+All CLI tools live under `cmd/`. Shared logic is placed in `internal/`.
+
+```text
+cli/
+ ├── cmd/
+ │    ├── gotestx/      # Go-native binary
+ │    ├── gcpr/         # planned Go migration
+ │    ├── gcr/
+ │    ├── gce/
+ │    ├── gct/
+ │    ├── gsux/
+ │    ├── gcch/
+ │    └── ddc/
+ ├── internal/          # shared logic for CLI tools
+ ├── go.mod
+ └── go.sum
+```
+
+---
+
+## 🔮 Future
+
+For now, all CLI tools remain inside this repository. In the future, some may be split into standalone modules (e.g., `entiqon/gotestx`) if they grow beyond Entiqon-specific workflows.
+
+This setup ensures:
+- Unified release cycle for Entiqon CLI tools.
+- Shared infrastructure for CI/CD.
+- Simple contributor workflow.
 
 ---
 
@@ -70,7 +90,14 @@ gcr v1.14.0
 - **Plugin architecture** – let projects extend CLI with their own subcommands.
 - **Improved test harness** – Bats/shunit2 suites for CLI validation.
 
----
 
 ✅ In short: **Entiqon CLI = developer efficiency + project discipline**.  
 It codifies the workflows we already practice (TDD, semantic commits, 100% coverage, structured releases) into **repeatable, versioned, safe automation.**
+
+---
+
+## 📄 License
+
+Part of the [Entiqon Project](https://github.com/entiqon).  
+Licensed under the MIT License.
+
