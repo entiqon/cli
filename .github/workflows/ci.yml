@@ -23,7 +23,7 @@ jobs:
 
       - name: Run tests with coverage (excluding cmd/)
         run: |
-          gotestx -c ./cli/internal/...
+          gotestx -c ./internal/...
 
       - name: Show coverage %
         run: |
